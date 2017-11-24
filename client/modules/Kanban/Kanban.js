@@ -3,6 +3,14 @@ import { connect } from 'react-redux';
 import Lanes from '../Lane/Lanes';
 import { createLane } from '../Lane/LaneActions';
 import { bindActionCreators } from 'redux';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { compose } from 'redux';
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  DragDropContext(HTML5Backend)
+)(Kanban);
 
 // Import Style
 import styles from './Kanban.css';
@@ -39,3 +47,4 @@ const { lanes, createLane } = this.props;
 >+</button>
 
 export default connect(mapStateToProps)(Kanban);
+

@@ -9,15 +9,18 @@ export const UPDATE_NOTE = 'UPDATE_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 
 // Export Actions
-export function createNote(note) {
-  return {
-    type: CREATE_NOTE,
-    note: {
-      id: uuid.v4(),
-      ...note
-    }
-  };
-};
+export function createNote(laneId, note) {
+  return dispatch => {
+    return callApi(`lanes/${laneId}/notes`, 'post', note).then(res => {
+      dispatch({
+        type: CREATE_NOTE,
+        note: res.note,
+      });      
+      const normalizedLaneNotes = res.lane.notes.map(note => note._id);
+      dispatch(updateLane(Object.assign({}, res.lane, { notes: normalizedLaneNotes })));
+    });
+  }
+}
 
 export function createNotes(notes) {
   return {
@@ -26,16 +29,26 @@ export function createNotes(notes) {
   };
 }
 
-export function updateNote(updatedNote) {
-  return {
-    type: UPDATE_NOTE,
-    ...updatedNote
-  };
-};
+export function updateNote(laneId, note) {
+  return dispatch => {
+    return callApi(`lanes/${laneId}/notes/${note._id}`, 'put', note).then(res => {
+      dispatch({
+        type: UPDATE_NOTE,
+        note
+      })
+    })
+  }
+}
 
-export function deleteNote(id) {
-  return {
-    type: DELETE_NOTE,
-    id
-  };
-};
+export function deleteNote(laneId, noteId) {
+  return dispatch => {
+    return callApi(`lanes/${laneId}/notes/${noteId}`, 'delete').then(res =>{
+      dispatch({
+        type: DELETE_NOTE,
+        id: noteId
+      });
+      const normalizedLaneNotes = res.lane.notes.map(note => note._id);
+      dispatch(updateLane(Object.assign({}, res.lane, { notes: normalizedLaneNotes })));
+    });
+  }
+}

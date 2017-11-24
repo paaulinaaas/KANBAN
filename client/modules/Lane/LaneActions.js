@@ -31,16 +31,20 @@ export function createLane(lane) {
 export function updateLane(updatedLane) {
   return {
     type: UPDATE_LANE,
-    ...updatedLane
+    lane
   };
 };
 
 export function deleteLane(id) {
-  return {
-    type: DELETE_LANE,
-    id
-  };
-};
+  return dispatch => {
+    return callApi(`lanes/${id}`, 'delete').then(res => {
+      dispatch({
+        type: DELETE_LANE,
+        id
+      })
+    })
+  }
+}
 
 export function fetchLanes() {
   return (dispatch) => {
