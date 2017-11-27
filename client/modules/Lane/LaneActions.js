@@ -1,5 +1,5 @@
-import callApi from '../../../util/apiCaller';
-import { lanes } from '../../../util/schema';
+import callApi from '../../util/apiCaller';
+import { lanes } from '../../util/schema';
 import { normalize } from 'normalizr';
 import { createNotes } from '../Note/NoteActions';
 import uuid from 'uuid';
@@ -20,10 +20,10 @@ export function createLanes(lanes) {
 export function createLane(lane) {
   return (dispatch) => {
     return callApi('lanes', 'post', lane).then(res => {
-      dispatch(createLanes({
+      dispatch({
         type: CREATE_LANE,
         lane: res
-      }));
+      });
     });
   };
 };
@@ -31,16 +31,16 @@ export function createLane(lane) {
 export function updateLane(updatedLane) {
   return {
     type: UPDATE_LANE,
-    lane
+    updatedLane
   };
 };
 
-export function deleteLane(id) {
+export function deleteLane(lane) {
   return dispatch => {
-    return callApi(`lanes/${id}`, 'delete').then(res => {
+    return callApi(`lanes/${lane.id}`, 'delete').then(res => {
       dispatch({
         type: DELETE_LANE,
-        id
+        id: lane.id
       })
     })
   }
